@@ -1,9 +1,9 @@
 class Key {
-  constructor({ code, key }, isShift = false, iscapsLock = false, lang = 'EN') {
+  constructor({ code, key }, shift = false, capsLock = false, lang = 'EN') {
     this.code = code;
     this.key = key;
-    this.isShift = isShift;
-    this.capsLock = iscapsLock;
+    this.shift = shift;
+    this.capsLock = capsLock;
     this.lang = lang;
   }
 
@@ -16,20 +16,32 @@ class Key {
     } else if (this.key === 'Delete' || this.key === 'Tab') {
       element.classList.add('keyboard__key_medium');
     }
+    if (this.key === 'CapsLock') {
+      const elementContent = document.createElement('span');
+      if (this.capsLock) {
+        elementContent.classList.add('circle', 'press');
+      } else {
+        elementContent.classList.add('circle');
+      }
+      element.append(elementContent);
+    }
     const elementContent = document.createElement('span');
     elementContent.classList.add('key__descr');
     if (this.key instanceof Array) {
       const [enDown, enUp, ruDown, ruUp] = this.key;
-      if (this.isShift === false && this.lang === 'EN') {
+      if (this.shift === false && this.lang === 'EN') {
         elementContent.innerHTML = enDown;
-      } else if (this.isShift === true && this.lang === 'EN') {
+      } else if (this.shift === true && this.lang === 'EN') {
         elementContent.innerHTML = enUp;
-      } else if (this.isShift === false && this.lang === 'RU') {
+      } else if (this.shift === false && this.lang === 'RU') {
         elementContent.innerHTML = ruDown;
-      } else if (this.isShift === true && this.lang === 'RU') {
+      } else if (this.shift === true && this.lang === 'RU') {
         elementContent.innerHTML = ruUp;
       }
       element.setAttribute('data-type', 'printed');
+    } else if (this.code === 'Space') {
+      element.setAttribute('data-type', 'printed');
+      elementContent.innerHTML = this.key;
     } else {
       element.setAttribute('data-type', 'control');
       elementContent.innerHTML = this.key;

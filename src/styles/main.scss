@@ -46,6 +46,22 @@ $Key_width: 50px;
     &[data-key='Space'] {
       flex: 0 0 calc($Key_width * 7 + 30px);
     }
+    &[data-key='CapsLock'] {
+      position: relative;
+      & span.circle {
+        position: absolute;
+        content: '';
+        height: 10px;
+        width: 10px;
+        background-color: black;
+        border-radius: 50%;
+        top: 3px;
+        right: 3px;
+        &.press {
+          background-color: red;
+        }
+      }
+    }
   }
 }
 

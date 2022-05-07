@@ -1,11 +1,12 @@
 import Key from './Key';
 
 class KeyBoard {
-  constructor(data, lang = 'EN', capsLock = false) {
+  constructor(data) {
     this.shift = false;
-    this.capsLock = capsLock;
-    this.lang = lang;
+    this.capsLock = false;
+    this.lang = 'EN';
     this.data = data;
+    this.getLangFromLocalStorage();
   }
 
   render() {
@@ -27,11 +28,15 @@ class KeyBoard {
     this.shift = !this.shift;
   }
 
+  isCapsLock() {
+    this.capsLock = !this.capsLock;
+  }
+
   getLangFromLocalStorage() {
     if (localStorage.getItem('lang')) {
       this.lang = localStorage.getItem('lang');
     } else {
-      this.lang = 'EN';
+      localStorage.setItem('lang', this.lang);
     }
   }
 }
