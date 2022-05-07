@@ -37,37 +37,113 @@ operatingSystem.textContent = 'Сделанно на Windows';
 descr.append(operatingSystem);
 app.append(descr);
 
+/* --------------------------------------Pressed--------------------------------------------------*/
+
+const pressed = new Set();
+
+function addPressedKey(key) {
+  pressed.add(key);
+  const element = document.querySelector(`[data-key="${key}"]`);
+  element.classList.add('active');
+}
+function removePressedKey(key) {
+  pressed.delete(key);
+  const element = document.querySelector(`[data-key="${key}"]`);
+  element.classList.remove('active');
+}
+
 /* --------------------------------------EVENTS---------------------------------------------------*/
 
-const onShift = (e) => {
-  if (e.key === 'Shift') {
-    keyboardWrapper.innerHTML = '';
-    keyboard.isShift();
-    keyboardWrapper.append(keyboard.render());
-    document.removeEventListener('keydown', onShift);
+const onShift = () => {
+  keyboardWrapper.innerHTML = '';
+  keyboard.isShift();
+  keyboardWrapper.append(keyboard.render());
+};
+
+const changeLanguage = (language) => {
+  keyboardWrapper.innerHTML = '';
+  localStorage.setItem('lang', language);
+  keyboard.getLangFromLocalStorage();
+  keyboardWrapper.append(keyboard.render());
+};
+
+const onKeyDown = (e) => {
+  if (!pressed.has(e.code)) {
+    if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight') && !pressed.has('ShiftLeft') && !pressed.has('ShiftRight')) {
+      onShift();
+    }
+    if (e.code === 'CapsLock') {
+      onShift();
+    }
+    if (pressed.has('ShiftLeft') && e.code === 'AltLeft') {
+      if (keyboard.lang === 'EN') {
+        changeLanguage('RU');
+      } else {
+        changeLanguage('EN');
+      }
+    }
+    addPressedKey(e.code);
   }
 };
 
-document.addEventListener('keydown', onShift);
-
-document.addEventListener('keyup', (e) => {
-  onShift(e);
-  document.addEventListener('keydown', onShift);
-});
-
-const onCapsLock = (e) => {
-  if (e.code === 'CapsLock') {
-    keyboardWrapper.innerHTML = '';
-    keyboard.isShift();
-    keyboardWrapper.append(keyboard.render());
-    document.removeEventListener('keydown', onCapsLock);
+const onKeyUp = (e) => {
+  if (pressed.has(e.code)) {
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+      onShift();
+    }
+    removePressedKey(e.code);
+  }
+};
+const onMouseDown = (e) => {
+  const el = e.target.closest('[data-type]');
+  if (el) {
+    const code = el.getAttribute('data-key');
+    addPressedKey(code);
   }
 };
 
-document.addEventListener('keydown', onCapsLock);
+const onMouseUp = (e) => {
+  const el = e.target.closest('[data-type]');
+  if (el) {
+    const code = el.getAttribute('data-key');
+    removePressedKey(code);
+  }
+};
 
-document.addEventListener('keyup', () => {
-  document.addEventListener('keydown', onCapsLock);
-});
+document.addEventListener('keydown', onKeyDown);
+
+document.addEventListener('keyup', onKeyUp);
+
+document.addEventListener('mousedown', onMouseDown);
+
+document.addEventListener('mouseup', onMouseUp);
+
+// keyboardWrapper.addEventListener('mousedown', (e) => {
+//   textField.focus();
+//   const element = e.target.closest('[data-type]');
+//   if (element) {
+//     element.classList.add('active');
+//     const child = element.firstChild;
+//     if (element.getAttribute('data-type') === 'printed') {
+//       textField.value += child.textContent;
+//     } else if (element.getAttribute('data-type') === 'control') {
+//       switch (child.textContent) {
+//         case 'Shift':
+//           onShift();
+//           break;
+//         case 'Enter':
+//           textField.value += '\n';
+//       }
+//     }
+//   }
+// });
+
+// keyboardWrapper.addEventListener('mouseup', (e) => {
+//   const element = e.target.closest('[data-type]');
+//   if (element) {
+//     element.classList.remove('active');
+//   }
+// });
+// console.log(keyboard.shift);
 
 window.addEventListener('DOMContentLoaded', () => {});

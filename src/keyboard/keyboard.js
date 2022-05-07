@@ -1,8 +1,8 @@
 import Key from './Key';
 
 class KeyBoard {
-  constructor(data, lang = 'EN', shift = false, capsLock = false) {
-    this.shift = shift;
+  constructor(data, lang = 'EN', capsLock = false) {
+    this.shift = false;
     this.capsLock = capsLock;
     this.lang = lang;
     this.data = data;
@@ -25,6 +25,14 @@ class KeyBoard {
 
   isShift() {
     this.shift = !this.shift;
+  }
+
+  getLangFromLocalStorage() {
+    if (localStorage.getItem('lang')) {
+      this.lang = localStorage.getItem('lang');
+    } else {
+      this.lang = 'EN';
+    }
   }
 }
 
