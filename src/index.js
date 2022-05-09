@@ -6,34 +6,6 @@ import DATA from './keyboard/data';
 
 const keyboard = new KeyBoard(DATA);
 
-// keyboardWrapper.addEventListener('mousedown', (e) => {
-//   textField.focus();
-//   const element = e.target.closest('[data-type]');
-//   if (element) {
-//     element.classList.add('active');
-//     const child = element.firstChild;
-//     if (element.getAttribute('data-type') === 'printed') {
-//       textField.value += child.textContent;
-//     } else if (element.getAttribute('data-type') === 'control') {
-//       switch (child.textContent) {
-//         case 'Shift':
-//           onShift();
-//           break;
-//         case 'Enter':
-//           textField.value += '\n';
-//       }
-//     }
-//   }
-// });
-
-// keyboardWrapper.addEventListener('mouseup', (e) => {
-//   const element = e.target.closest('[data-type]');
-//   if (element) {
-//     element.classList.remove('active');
-//   }
-// });
-// console.log(keyboard.shift);
-
 window.addEventListener('DOMContentLoaded', () => {
   /* -----------------------------------------CREATE APP WRAPPER ---------------------------------*/
 
@@ -101,6 +73,7 @@ window.addEventListener('DOMContentLoaded', () => {
   /* --------------------------------------Pressed------------------------------------------------*/
 
   const pressed = new Set();
+  let pressMouse = null;
 
   function addPressedKey(key) {
     pressed.add(key);
@@ -155,10 +128,11 @@ window.addEventListener('DOMContentLoaded', () => {
     addPressedKey(code);
   };
 
-  const checkKeyUp = (element, code) => {
-    if (code === 'ShiftLeft' || code === 'ShiftRight') {
+  const checkKeyUp = (code) => {
+    if (pressed.has(code) && ((code === 'ShiftLeft' && !pressed.has('ShiftRight')) || (code === 'ShiftRight' && !pressed.has('ShiftLeft')))) {
       onShift();
-    } else if (pressed.has('ShiftLeft') && pressed.has('AltLeft') && code === 'AltLeft') {
+    }
+    if ((pressed.has('ShiftLeft') && code === 'AltLeft') || (pressed.has('AltLeft') && code === 'ShiftLeft')) {
       if (keyboard.lang === 'EN') {
         changeLanguage('RU');
       } else {
@@ -169,29 +143,30 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   const onKeyDown = (e) => {
-    e.preventDefault();
     const element = document.querySelector(`[data-key="${e.code}"]`);
-    checkKeyDown(element, e.code);
+    if (element) {
+      checkKeyDown(element, e.code);
+    }
   };
 
   const onKeyUp = (e) => {
     e.preventDefault();
     const element = document.querySelector(`[data-key="${e.code}"]`);
-    checkKeyUp(element, e.code);
+    if (element) {
+      checkKeyUp(e.code);
+    }
   };
   const onMouseDown = (e) => {
     const el = e.target.closest('[data-type]');
     if (el) {
       const code = el.getAttribute('data-key');
+      pressMouse = code;
       checkKeyDown(el, code);
     }
   };
-  const onMouseUp = (e) => {
-    e.preventDefault();
-    const el = e.target.closest('[data-type]');
-    if (el) {
-      const code = el.getAttribute('data-key');
-      checkKeyUp(el, code);
+  const onMouseUp = () => {
+    if (pressMouse) {
+      checkKeyUp(pressMouse);
     }
   };
 
@@ -199,7 +174,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('keyup', onKeyUp);
 
-  document.addEventListener('mousedown', onMouseDown);
+  keyboardWrapper.addEventListener('mousedown', onMouseDown);
 
-  document.addEventListener('mouseup', onMouseUp);
+  keyboardWrapper.addEventListener('mouseup', onMouseUp);
 });
