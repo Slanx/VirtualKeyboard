@@ -31,7 +31,7 @@ app.append(keyboardWrapper);
 const descr = document.createElement('div');
 descr.classList.add('descr');
 const lang = document.createElement('p');
-lang.textContent = 'Переключение языка <shift> + <ctrl>';
+lang.textContent = 'Переключение языка на левые <shift> + <alt>';
 descr.append(lang);
 const operatingSystem = document.createElement('p');
 operatingSystem.textContent = 'Сделанно на Windows';
@@ -39,8 +39,6 @@ descr.append(operatingSystem);
 app.append(descr);
 
 /* --------------------------------------TextField------------------------------------------------*/
-
-const inputText = textField.value;
 
 const insertText = (text) => {
   textField.focus();
@@ -98,30 +96,29 @@ const changeLanguage = (language) => {
 };
 
 const checkKeyDown = (element, code) => {
-  if (!pressed.has(code)) {
-    if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'printed') {
-      const textKey = element.firstChild.textContent;
-      insertText(textKey);
-    } else if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'control') {
-      if (code === 'ShiftLeft' && !pressed.has('ShiftLeft') && !pressed.has('ShiftRight')) {
-        onShift();
-      } else if (code === 'CapsLock') {
-        keyboard.isCapsLock();
-        onShift();
-      } else if (pressed.has('ShiftLeft') && code === 'AltLeft') {
-        if (keyboard.lang === 'EN') {
-          changeLanguage('RU');
-        } else {
-          changeLanguage('EN');
-        }
-      } else if (code === 'Backspace') {
-        backSpace();
-      } else if (code === 'Delete') {
-        deleteText();
-      } else if (code === 'Enter') {
-        textWrap();
+  if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'printed') {
+    const textKey = element.firstChild.textContent;
+    insertText(textKey);
+  } else if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'control') {
+    if (code === 'ShiftLeft' && !pressed.has('ShiftLeft') && !pressed.has('ShiftRight') && !keyboard.shift) {
+      onShift();
+    } else if (code === 'CapsLock') {
+      keyboard.isCapsLock();
+      onShift();
+    } else if ((pressed.has('ShiftLeft') && code === 'AltLeft') || (pressed.has('AltLeft') && code === 'ShiftLeft')) {
+      if (keyboard.lang === 'EN') {
+        changeLanguage('RU');
+      } else {
+        changeLanguage('EN');
       }
+    } else if (code === 'Backspace') {
+      backSpace();
+    } else if (code === 'Delete') {
+      deleteText();
+    } else if (code === 'Enter') {
+      textWrap();
     }
+
     addPressedKey(code);
   }
 };
