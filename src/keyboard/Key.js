@@ -1,15 +1,21 @@
 class Key {
-  constructor({ code, key }, shift = false, capsLock = false, lang = 'EN') {
+  constructor({ code, key }, shift = false, capsLock = false, lang = 'EN', active = false) {
     this.code = code;
     this.key = key;
     this.shift = shift;
     this.capsLock = capsLock;
     this.lang = lang;
+    this.active = active;
   }
 
   render = () => {
     const element = document.createElement('button');
     element.classList.add('keyboard__key', 'key');
+    if (this.active) {
+      element.classList.add('keyboard__key', 'key', 'active');
+    } else {
+      element.classList.add('keyboard__key', 'key');
+    }
     element.setAttribute('data-key', this.code);
     if (this.key === 'Backspace' || this.key === 'Shift' || this.key === 'Enter' || this.key === 'CapsLock') {
       element.classList.add('keyboard__key_long');
@@ -39,7 +45,7 @@ class Key {
         elementContent.innerHTML = ruUp;
       }
       element.setAttribute('data-type', 'printed');
-    } else if (this.code === 'Space') {
+    } else if (this.code === 'Space' || this.code === 'ArrowRight' || this.code === 'ArrowLeft' || this.code === 'ArrowUp' || this.code === 'ArrowDown') {
       element.setAttribute('data-type', 'printed');
       elementContent.innerHTML = this.key;
     } else {
