@@ -100,6 +100,12 @@ window.addEventListener('DOMContentLoaded', () => {
     keyboardWrapper.append(keyboard.render());
   };
 
+  const onCapsLock = () => {
+    keyboardWrapper.innerHTML = '';
+    keyboard.isCapsLock();
+    keyboardWrapper.append(keyboard.render());
+  };
+
   const changeLanguage = (language) => {
     keyboardWrapper.innerHTML = '';
     localStorage.setItem('lang', language);
@@ -117,8 +123,7 @@ window.addEventListener('DOMContentLoaded', () => {
       } else if (code === 'ShiftRight' && !pressed.has('ShiftLeft') && !pressed.has('ShiftRight')) {
         onShift();
       } else if (code === 'CapsLock' && !pressed.has('CapsLock')) {
-        keyboard.isCapsLock();
-        onShift();
+        onCapsLock();
       } else if (code === 'Backspace') {
         backSpace();
       } else if (code === 'Delete') {

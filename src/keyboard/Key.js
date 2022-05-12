@@ -35,14 +35,46 @@ class Key {
     elementContent.classList.add('key__descr');
     if (this.key instanceof Array) {
       const [enDown, enUp, ruDown, ruUp] = this.key;
-      if (this.shift === false && this.lang === 'EN') {
-        elementContent.innerHTML = enDown;
-      } else if (this.shift === true && this.lang === 'EN') {
-        elementContent.innerHTML = enUp;
-      } else if (this.shift === false && this.lang === 'RU') {
-        elementContent.innerHTML = ruDown;
-      } else if (this.shift === true && this.lang === 'RU') {
-        elementContent.innerHTML = ruUp;
+      if (this.capsLock) {
+        if (this.shift === false) {
+          if (this.code.indexOf('Digit') !== -1 || this.code === 'Backquote' || this.code === 'Minus' || this.code === 'Equal') {
+            if (this.lang === 'EN') {
+              elementContent.innerHTML = enDown;
+            } else {
+              elementContent.innerHTML = ruDown;
+            }
+          } else if (this.lang === 'EN') {
+            elementContent.innerHTML = enUp;
+          } else {
+            elementContent.innerHTML = ruUp;
+          }
+        } else if (this.shift === true) {
+          if (this.code.indexOf('Digit') !== -1 || this.code === 'Backquote' || this.code === 'Minus' || this.code === 'Equal') {
+            if (this.lang === 'EN') {
+              elementContent.innerHTML = enUp;
+            } else {
+              elementContent.innerHTML = ruUp;
+            }
+          } else if (this.lang === 'EN') {
+            elementContent.innerHTML = enDown;
+          } else {
+            elementContent.innerHTML = ruDown;
+          }
+        }
+      } else if (this.capsLock === false) {
+        if (this.shift === false) {
+          if (this.lang === 'EN') {
+            elementContent.innerHTML = enDown;
+          } else {
+            elementContent.innerHTML = ruDown;
+          }
+        } else if (this.shift === true) {
+          if (this.lang === 'EN') {
+            elementContent.innerHTML = enUp;
+          } else {
+            elementContent.innerHTML = ruUp;
+          }
+        }
       }
       element.setAttribute('data-type', 'printed');
     } else if (this.code === 'Space' || this.code === 'ArrowRight' || this.code === 'ArrowLeft' || this.code === 'ArrowUp' || this.code === 'ArrowDown') {
