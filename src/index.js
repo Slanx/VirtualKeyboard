@@ -48,15 +48,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const backSpace = () => {
     textField.focus();
-    if (textField.selectionStart !== 0) {
+    if (textField.selectionStart !== 0 && textField.selectionStart === textField.selectionEnd) {
       textField.setRangeText('', textField.selectionStart - 1, textField.selectionEnd, 'end');
+    } else {
+      textField.setRangeText('', textField.selectionStart, textField.selectionEnd, 'end');
     }
   };
 
   const deleteText = () => {
     textField.focus();
-    if (textField.selectionStart !== 0) {
+    if (textField.selectionStart !== 0 && textField.selectionStart === textField.selectionEnd) {
       textField.setRangeText('', textField.selectionStart, textField.selectionEnd + 1, 'end');
+    } else {
+      textField.setRangeText('', textField.selectionStart, textField.selectionEnd, 'end');
     }
   };
 
